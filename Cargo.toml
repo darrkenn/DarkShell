@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 clear_screen = "0.1.0"
+ansi_term = "0.12.1"
