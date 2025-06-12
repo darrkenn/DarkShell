@@ -6,3 +6,12 @@ edition = "2024"
 [dependencies]
 clear_screen = "0.1.0"
 ansi_term = "0.12.1"
+sysinfo = "0.35.2"
+ferris-says = "0.3.2"
+
+[profile.release]
+lto = true
+
+[build]
+jobs = 4
+rustc-wrapper = "sccache"
