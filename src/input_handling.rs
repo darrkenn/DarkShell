@@ -2,8 +2,8 @@ mod command_handling;
 use std::{env};
 use std::path::{PathBuf};
 use ansi_term;
-use ansi_term::Color::{Red};
-use crate::input_handling::command_handling::{handle_cat, handle_cd, handle_clear, handle_cp, handle_current_ls, handle_different_ls, handle_echo, handle_exit, handle_grep, handle_help, handle_mkdir, handle_mv, handle_pwd, handle_rm, handle_rmdir, handle_rmdir_all, handle_find, handle_touch, handle_head, handle_tail, handle_fs, handle_single_ps, handle_getorkill_ps, handle_say};
+use crate::input_handling::command_handling::{handle_cat, handle_cd, handle_clear, handle_cp, handle_current_ls, handle_different_ls, handle_echo, handle_exit, handle_grep, handle_help, handle_mkdir, handle_mv, handle_pwd, handle_rm, handle_rmdir, handle_rmdir_all, handle_find, handle_touch, handle_head, handle_tail, handle_fs, handle_single_ps, handle_getorkill_ps, handle_say, handle_external_command, check_if_path};
+
 
 pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     let current_path = env::current_dir()?;
@@ -19,7 +19,16 @@ pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::
         
         ["clear"] => handle_clear(),
         ["ls"] => handle_current_ls(current_path),
-        ["ls", arg]  if !arg.is_empty() => handle_different_ls(arg.parse().unwrap()),
+        ["ls", arg]  if !arg.is_empty() =>  {
+            let is_path = check_if_path(arg.parse().unwrap());
+            if is_path == true {
+                handle_different_ls(arg.parse().unwrap()).expect("Uh oh");
+            } else if is_path == false {
+                handle_external_command(input.join(" "));
+            }
+            Ok(())
+        },
+        
         ["cd"] => handle_cd(home),
         ["cd", arg] if !arg.is_empty() => handle_cd(arg.parse().unwrap()),
         ["grep", args @ ..] if !args.is_empty() && length == 3 => handle_grep(args),
@@ -50,7 +59,7 @@ pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::
         ["pid", args @ ..] if !args.is_empty() && length == 3 => handle_getorkill_ps(args),
         
         _ => {
-            println!("{}", Red.paint("Invalid input!"));
+            handle_external_command(input.join(" "));
             Ok(())
         }
     }

@@ -1,7 +1,10 @@
 use std::path::{Path, PathBuf};
 use std::{env, fs, io, process};
+use std::fmt::format;
 use std::fs::File;
 use std::io::stdout;
+use std::process::{Command, Stdio};
+use std::ptr::replace;
 use ansi_term::Color::{Green, Red};
 use sysinfo::{System};
 use ferris_says::say;
@@ -325,4 +328,40 @@ pub fn handle_say(args: &[&str], length: usize) -> Result<(), Box<dyn std::error
         _ => {println!("Invalid choice");}
     }
     Ok(())
+}
+pub fn handle_external_command(user_input: String) {
+    let output = Command::new("sh")
+        .arg("-c")
+        .arg(user_input.clone())
+        .env("TERM", "xterm-256color")
+        .stdout(Stdio::piped())
+        .output()
+        .unwrap();
+    if output.status.success() {
+        let stdout = String::from_utf8_lossy(&*output.stdout).into_owned();
+        println!("{}", stdout);
+    } else if !output.status.success() {
+        {
+            let stderr = String::from_utf8_lossy(&*output.stderr).into_owned();
+            // let error = format!("{}: {} not found", "dksh", user_input);
+            let mut parsed_err: Vec<&str> = stderr.trim().split(' ').collect();
+            let mut test:u64 = 0;
+            if parsed_err[0].contains("sh:") {
+                parsed_err[0] = "dksh:";
+                parsed_err.remove(1);
+                parsed_err.remove(2);
+                parsed_err[1] = user_input.as_str();
+                parsed_err[2] = "not found:(";
+            };
+            let error = parsed_err.join(" ");
+            println!("{}",error);
+        }
+    }
+}
+pub fn check_if_path(path: PathBuf) -> bool {
+    if path.exists() && path.is_dir() {
+        true
+    } else {
+        false
+    }
 }
