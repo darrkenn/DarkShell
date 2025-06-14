@@ -1,9 +1,16 @@
-mod command_handling;
+mod misc_commands;
+mod text_commands;
+mod filesystem_commands;
+mod directory_commands;
+mod process_commands;
+
 use std::{env};
 use std::path::{PathBuf};
-use ansi_term;
-use crate::input_handling::command_handling::{handle_cat, handle_cd, handle_clear, handle_cp, handle_current_ls, handle_different_ls, handle_echo, handle_exit, handle_grep, handle_help, handle_mkdir, handle_mv, handle_pwd, handle_rm, handle_rmdir, handle_rmdir_all, handle_find, handle_touch, handle_head, handle_tail, handle_fs, handle_single_ps, handle_getorkill_ps, handle_say, handle_external_command, check_if_path};
-
+use crate::input_handling::misc_commands::{handle_clear, handle_exit, handle_help, handle_external_command, };
+use crate::input_handling::directory_commands::{handle_cd, handle_current_ls, handle_different_ls, handle_mkdir, handle_pwd, handle_rmdir, handle_rmdir_all};
+use crate::input_handling::filesystem_commands::{check_if_path, handle_cp, handle_find, handle_fs, handle_head, handle_mv, handle_rm, handle_tail, handle_touch};
+use crate::input_handling::process_commands::{handle_getorkill_ps, handle_single_ps};
+use crate::input_handling::text_commands::{handle_cat, handle_echo, handle_grep, handle_say};
 
 pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
     let current_path = env::current_dir()?;

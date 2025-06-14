@@ -15,9 +15,9 @@ fn main() {
         // print!("{:?}", current_dir);
         // print!("{}", format!("{:?}{}", current_dir,Blue.paint(">> "))) ;
         stdout().flush().unwrap();
+        input.clear();
         io::stdin().read_line(&mut input).unwrap();
         let parsed: Vec<&str> = input.trim().split(' ').collect();
-
         handle_input(parsed, home.clone()).expect("Cant process input");
     }
 }
