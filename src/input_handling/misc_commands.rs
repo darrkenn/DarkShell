@@ -24,10 +24,10 @@ pub fn handle_external_command(command: &str, args: &[&str]) {
                 println!("{}", stdout);
             } else {
                 let stderr = String::from_utf8_lossy(&output.stderr);
-                println!("Error: {}", stderr);
+                println!("{stderr}");
             }
         }
-        Err(e) => {
+        Err(_error) => {
             println!("dksh: {} not found :(", command);
         }
     }
