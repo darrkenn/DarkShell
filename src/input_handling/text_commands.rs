@@ -20,18 +20,14 @@ pub fn handle_echo(args: &[&str], length: usize) -> Result<(), Box<dyn std::erro
     Ok(())
 }
 
-pub fn handle_cat(args: &[&str], length: usize) -> Result<(), Box<dyn std::error::Error>> {
-    match args {
-        [arg] if length == 2 => {
-            if Path::new(arg).exists() {
-                let content = fs::read_to_string(arg)?;
-                println!("{}", content);
-            } else {
-                println!("{}", arg);
-            }
+pub fn handle_cat(arg: &str, length: usize) -> Result<(), Box<dyn std::error::Error>> {
+    match arg {
+        arg if Path::new(arg).exists() => {
+            let content = fs::read_to_string(arg)?;
+            println!("{}", content);
         }
         _ => {
-            println!("{}", Red.paint("Invalid input"));
+            println!("{}", Red.paint("File not found!"));
         }
     }
     Ok(())

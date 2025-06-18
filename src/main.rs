@@ -1,8 +1,9 @@
 mod input_handling;
-use std::{env, io};
+use std::{env, fs, io};
 use std::env::home_dir;
 use std::io::{stdout, Write};
 use ansi_term::Color::{Blue, Green};
+use serde::{Deserialize, Serialize};
 use crate::input_handling::handle_input;
 fn main() {
     let home = home_dir().unwrap();

@@ -22,16 +22,16 @@ pub fn handle_cd(destination: PathBuf) -> Result<(), Box<dyn std::error::Error>>
     }
     Ok(())
 }
-pub fn handle_different_ls(path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-    let entries = handle_ls(path)?;
+
+pub fn handle_current_ls(current_path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let entries = handle_ls(current_path)?;
     for entry in entries.iter() {
         println!("  {}", entry);
     }
     Ok(())
 }
-
-pub fn handle_current_ls(current_path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
-    let entries = handle_ls(current_path)?;
+pub fn handle_different_ls(path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+    let entries = handle_ls(path)?;
     for entry in entries.iter() {
         println!("  {}", entry);
     }

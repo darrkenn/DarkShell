@@ -20,9 +20,8 @@ pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::
         //    Text output   //
         /////////////////////
         ["echo", args @ ..] => handle_echo(args, length),
-        ["cat", args @ ..] => handle_cat(args, length),
+        ["cat", arg] if length == 2 => handle_cat(arg, length),
         ["say", args @ ..] if !args.is_empty() => handle_say(args, length),
-        
         
         ["clear"] => handle_clear(),
         ["ls"] => handle_current_ls(current_path),
@@ -31,11 +30,12 @@ pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::
             if is_path == true {
                 handle_different_ls(arg.parse().unwrap()).expect("Uh oh");
             } else if is_path == false {
-                handle_external_command(input.join(" "));
+                let command = input[0];
+                let args = &input[1..];
+                handle_external_command(command, args);
             }
             Ok(())
         },
-        
         ["cd"] => handle_cd(home),
         ["cd", arg] if !arg.is_empty() => handle_cd(arg.parse().unwrap()),
         ["grep", args @ ..] if !args.is_empty() && length == 3 => handle_grep(args),
@@ -66,7 +66,9 @@ pub fn handle_input(input: Vec<&str>, home: PathBuf) -> Result<(), Box<dyn std::
         ["pid", args @ ..] if !args.is_empty() && length == 3 => handle_getorkill_ps(args),
         
         _ => {
-            handle_external_command(input.join(" "));
+            let command = input[0];
+            let args = &input[1..];
+            handle_external_command(command, args);
             Ok(())
         }
     }
