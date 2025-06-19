@@ -10,6 +10,7 @@ sysinfo = "0.35.2"
 ferris-says = "0.3.2"
 whoami = "2.0.0-pre.2"
 console = "0.15.11"
+log = "0.4.27"
 [profile.release]
 lto = true
 
